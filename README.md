@@ -57,5 +57,9 @@ npm run dev
 npm run build
 ```
 
+## 在线访问
+通过vercel部署
+https://pixel-fate-fubwad4lg-fy14s-projects.vercel.app/
+
 ## 📜 许可说明
 本项目仅用于学习与像素艺术创作交流。卡牌图像资源通过 [ganesh-v/tarot-cards](https://github.com/ganesh-v/tarot-cards) 获取。
