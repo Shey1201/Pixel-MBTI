@@ -1,0 +1,558 @@
+@import 'tailwindcss';
+
+@layer base {
+  :root {
+    --bg-main: #050505; /* 极夜黑 */
+    --bg-deep: #010204;
+    --accent-purple: #1a0b2e; /* 暗紫色 */
+    --accent-silver: #E0E0E0; /* 冷银色 */
+    --accent-lavender: #8A2BE2; /* 淡紫色 */
+    --text-primary: #e2e8f0;
+    
+    /* 动画变量 */
+    --animate-shake: shake 0.5s cubic-bezier(.36,.07,.19,.97) both infinite;
+    --animate-float: float 4s ease-in-out infinite;
+    --animate-nebula: nebula 20s linear infinite;
+    --animate-card-hover: card-hover 0.3s ease-in-out;
+    --animate-shuffle: shuffle 0.5s ease-in-out infinite;
+    --animate-dust: dust 60s linear infinite;
+    --animate-nebula-pulsar: nebula-pulsar 15s ease-in-out infinite;
+    --animate-halo-glow: halo-glow 8s ease-in-out infinite;
+    --animate-breathing: breathing 3s ease-in-out infinite;
+    --animate-purple-glow: purple-glow 4s ease-in-out infinite;
+  }
+
+  /* 极夜星云漫反射 - 清晰淡紫星空效果 (去噪平滑版) */
+  .stardust-bg {
+    position: fixed;
+    inset: 0;
+    background: #050505;
+    background-image: 
+      radial-gradient(circle at 50% 100%, rgba(138, 43, 226, 0.05) 0%, transparent 80%);
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .stardust-particle {
+    position: absolute;
+    background: #F8F8FF;
+    border-radius: 50%;
+    animation: stardust-float var(--duration) ease-in-out infinite;
+    opacity: 0.2;
+  }
+
+  @keyframes stardust-float {
+    0%, 100% { transform: translate(0, 0); opacity: 0.1; }
+    50% { transform: translate(var(--x-move, 5px), var(--y-move, -10px)); opacity: 0.3; }
+  }
+
+  /* 铜色卡片边框 - 平庸 (暗哑古铜/单线) */
+  .texture-bronze-edge {
+    background: #1a0f08;
+    border: 1px solid #8B4513;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .texture-bronze-edge::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.05;
+    pointer-events: none;
+  }
+
+  /* 银色卡片边框 - 卓越 (月光冷银/双细线/星点) */
+  .texture-silver-edge {
+    background: #0f172a;
+    border: 1px solid #C0C0C0;
+    box-shadow: inset 0 0 10px rgba(192, 192, 192, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .texture-silver-edge::before {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border: 0.5px solid rgba(192, 192, 192, 0.3);
+    pointer-events: none;
+  }
+
+  /* 星点装饰 */
+  .texture-silver-edge::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, #ffffff 0.5px, transparent 0.5px);
+    background-size: 15px 15px;
+    opacity: 0.1;
+    pointer-events: none;
+  }
+
+  /* 金色卡片边框 - 传奇 (亮金/三层几何线/流光) */
+  .texture-gold-edge {
+    background: #0a0a05;
+    border: 1.5px solid #FFD700;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 三层几何线叠加 */
+  .texture-gold-edge::before {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    border: 0.5px solid rgba(255, 215, 0, 0.4);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .texture-gold-edge-inner {
+    position: absolute;
+    inset: 3px;
+    border: 0.5px solid rgba(255, 215, 0, 0.2);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* 流光动画 (Shimmer) */
+  .texture-gold-edge::after {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 300%;
+    height: 300%;
+    background: linear-gradient(45deg, 
+      transparent 45%, 
+      rgba(255, 215, 0, 0.1) 48%, 
+      rgba(255, 215, 0, 0.3) 50%, 
+      rgba(255, 215, 0, 0.1) 52%, 
+      transparent 55%
+    );
+    animation: gold-shimmer 8s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes gold-shimmer {
+    0% { transform: translate(-30%, -30%); }
+    100% { transform: translate(30%, 30%); }
+  }
+
+  /* 卡背呼吸感动画 */
+  @keyframes back-pattern-breath {
+    0%, 100% { opacity: 0.25; filter: drop-shadow(0 0 1px rgba(255, 214, 0, 0.1)); }
+    50% { opacity: 0.4; filter: drop-shadow(0 0 2px rgba(255, 214, 0, 0.3)); }
+  }
+
+  .animate-back-pattern {
+    animation: back-pattern-breath 6s ease-in-out infinite;
+  }
+
+  /* 移除旧的银色动画 */
+  @keyframes silver-sweep {
+    0% { transform: translate(-20%, -20%); }
+    100% { transform: translate(20%, 20%); }
+  }
+
+  /* 槽位动态颜色映射 */
+  .slot-dynamic {
+    transition: opacity 0.6s ease;
+  }
+
+  /* 塔罗风格渐变文字 - 冷月白->丁香紫->深海蓝 */
+  /* 神秘噪点纹理 - 简化 */
+  .bg-noise-texture {
+    background-color: rgba(0,0,0,0.2);
+  }
+
+  /* 碳纤维纹理 - 简化 */
+  .bg-carbon-pattern {
+    background-color: rgba(255,255,255,0.02);
+  }
+
+  /* 电路板纹理 - 简化 */
+  .bg-circuit-board {
+    background-color: rgba(255,255,255,0.03);
+  }
+
+  /* 细条纹纹理 - 简化 */
+  .bg-pinstripe-pattern {
+    background-color: rgba(255,255,255,0.01);
+  }
+
+  .pixel-title-tarot {
+    font-family: 'Cinzel', serif;
+    background: linear-gradient(to bottom, 
+      #F8F8FF 0%, 
+      #B19CD9 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    position: relative;
+  }
+
+  /* 文字背后紫色像素外发光 - 移除昂贵的滤镜 */
+  .pixel-title-tarot::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    color: rgba(138, 43, 226, 0.2);
+  }
+
+  /* 无边框透明磨砂气泡 - 移除 backdrop-blur */
+  .frosted-bubble {
+    background: rgba(26, 11, 46, 0.4);
+    border: none !important;
+    padding: 16px 24px;
+    border-radius: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 分割线 */
+  .bubble-divider {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(to right, transparent, var(--accent-silver), transparent);
+    margin: 10px 0;
+    opacity: 0.3;
+  }
+
+  /* 暗金属光泽深灰色像素边框卡槽 */
+  .slot-obsidian-inset {
+    background: #0a0a0a;
+    border-radius: 1.5rem;
+    border: 1px solid rgba(60, 60, 60, 0.3);
+  }
+
+  /* 冷紫色呼吸灯效果 - 移除 box-shadow 动画 */
+  .slot-active {
+    border-color: rgba(138, 43, 226, 0.8);
+    animation: purple-breathing 3s ease-in-out infinite;
+  }
+
+  @keyframes purple-breathing {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  /* 冷银色与淡紫色渐变描边按钮 - 性能优化版 */
+  .pixel-btn-standard {
+    background-color: rgba(26, 11, 46, 0.8);
+    border: 1px solid rgba(138, 43, 226, 0.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pixel-btn-standard:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(138, 43, 226, 0.2);
+    filter: brightness(1.1);
+  }
+
+  .pixel-btn-standard::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(224, 224, 224, 0.05) 50%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .pixel-btn-standard .neon-text {
+    background: linear-gradient(to bottom, #F8F8FF, #B19CD9);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 4px rgba(138, 43, 226, 0.3);
+  }
+
+  /* 魔法阵底座 - 简化版 */
+  .magic-circle-base {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%) rotateX(75deg);
+    width: 240px;
+    height: 240px;
+    border: 1px solid rgba(138, 43, 226, 0.15);
+    border-radius: 50%;
+    z-index: -1;
+    background: rgba(138, 43, 226, 0.05);
+  }
+
+  .magic-circle-inner {
+    position: absolute;
+    inset: 10px;
+    border: 1px dashed rgba(224, 224, 224, 0.2);
+    border-radius: 50%;
+    animation: spin-slow 25s linear infinite;
+  }
+
+  .magic-circle-outer {
+    position: absolute;
+    inset: -5px;
+    border: 1px solid rgba(138, 43, 226, 0.1);
+    border-radius: 50%;
+    animation: spin-reverse 35s linear infinite;
+  }
+
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes spin-reverse {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+  }
+
+  /* 极夜黑玻璃面板 - 移除昂贵的 backdrop-filter */
+  .glass-panel-cold {
+    background: rgba(20, 22, 45, 0.75);
+    border: 1px solid rgba(150, 160, 255, 0.25);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  }
+
+  /* 银色蚀刻纹理 - 用于普通卡牌 (更精致的银色边缘和蚀刻感) */
+  .texture-silver-etching {
+    background: #1a1c2c;
+    border: 2px solid #E0E0E0;
+    box-shadow: 0 0 5px rgba(224, 224, 224, 0.1);
+    position: relative;
+  }
+
+  .texture-silver-etching::before {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border: 1px solid rgba(224, 224, 224, 0.2);
+    pointer-events: none;
+  }
+
+  .texture-silver-etching::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='4' height='4' viewBox='0 0 4 4' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 3h1v1H1V3zm2-2h1v1H3V1z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    opacity: 0.05;
+    pointer-events: none;
+  }
+
+  /* HUD 风格气泡 - 移除昂贵的 backdrop-filter */
+  .hud-bubble {
+    background: rgba(26, 11, 46, 0.6);
+    border: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    color: var(--accent-silver);
+    animation: breath 4s ease-out infinite;
+  }
+
+  /* 细腻的胶片噪点 */
+  .noise-texture {
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.005; /* 降低透明度 */
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  /* 银沙粒子流动 - 卓越等级 */
+  @keyframes silver-sand {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 200%; }
+  }
+
+  .animate-silver-sand {
+    background-image: radial-gradient(circle, #E0E0E0 1px, transparent 1px);
+    background-size: 10px 10px;
+    animation: silver-sand 20s linear infinite;
+    opacity: 0.15; /* 降低透明度 */
+  }
+
+  /* 银色流动特效 */
+  .silver-flow {
+    background: linear-gradient(90deg, transparent, rgba(224, 224, 224, 0.05), transparent);
+    background-size: 200% 100%;
+    animation: flow 4s linear infinite; /* 减慢速度 */
+  }
+
+  @keyframes flow {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* 对话气泡动画 */
+  @keyframes bubble-pop {
+    0% { transform: scale(0.9) translateY(5px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+  }
+
+  .animate-bubble-pop {
+    animation: bubble-pop 0.3s ease-out forwards;
+  }
+
+  @keyframes breath {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-1px); }
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: #f1f5f9;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    background-color: #050505;
+    font-family: 'Inter', 'Noto Serif SC', serif;
+    image-rendering: pixelated; 
+  }
+
+  .font-serif {
+    font-family: 'Georgia', 'Times New Roman', serif;
+  }
+
+  .glass-btn {
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .glass-btn:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  /* 槽位深度内边框 - 增强内凹感 (暗金属质感) */
+  .slot-inset-shadow {
+    box-shadow: 
+      inset 0 4px 8px rgba(0, 0, 0, 0.8),
+      0 1px 1px rgba(255, 255, 255, 0.05);
+    background: #050505;
+  }
+
+  .burning-text {
+    background: linear-gradient(to bottom, #F8F8FF, #B19CD9);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: text-burn 3s ease-in-out infinite;
+  }
+
+  @keyframes text-burn {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
+  }
+
+  @keyframes rune-glow {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.5; }
+  }
+
+  .animate-rune-glow {
+    animation: rune-glow var(--duration, 3s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+  }
+
+  /* 新增：旋转法阵动画 */
+  @keyframes spin-linear {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .animate-spin-linear {
+    animation: spin-linear var(--duration, 10s) linear infinite;
+  }
+
+  @keyframes spin-reverse {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+  }
+
+  .animate-spin-reverse {
+    animation: spin-reverse var(--duration, 15s) linear infinite;
+  }
+
+  /* 新增：符文环脉冲 - 极致简化版 */
+  @keyframes rune-ring {
+    0%, 100% { transform: translate(-50%, -50%); opacity: 0.1; }
+    50% { transform: translate(-50%, -50%); opacity: 0.15; }
+  }
+
+  .animate-rune-ring {
+    animation: rune-ring 15s ease-in-out infinite; /* 进一步减慢速度 */
+  }
+
+  @keyframes particle-scatter {
+    0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    20% { opacity: 0.4; }
+    100% { transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1); opacity: 0; }
+  }
+
+  .animate-particle-scatter {
+    animation: particle-scatter var(--duration, 2s) ease-out infinite;
+    animation-delay: var(--delay, 0s);
+  }
+
+  #root {
+    min-height: 100vh;
+    contain: layout style;
+  }
+}
+
+/* 像素艺术通用类 */
+.pixel-art {
+  image-rendering: pixelated;
+}
+
+/* 动态层性能优化 */
+.dynamic-layer {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+@keyframes dust {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.15; }
+}
+
+@keyframes shuffle {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-5px, -1px); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-1px, 0, 0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+@keyframes nebula {
+  0% { transform: rotate(0deg); opacity: 0.05; }
+  100% { transform: rotate(360deg); opacity: 0.05; }
+}
+
+@keyframes card-hover {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-4px); }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
