@@ -1,10 +1,11 @@
-# Pixel Fate: Arcane Tarot (像素命运：奥术塔罗)
+# Pixel Fate: Arcane Tarot
 
 一个基于 React 和像素艺术风格构建的现代塔罗牌占卜与互动应用。结合了暗黑奥术美学与流畅的 UI 交互，为用户提供沉浸式的塔罗体验。
 
 ## 📸 游戏截图
 
 ![Pixel Fate Game Screenshot](public/screenshots/game.png)
+
 
 
 
@@ -62,6 +63,10 @@ npm run dev
 ```bash
 npm run build
 ```
+
+## 在线访问
+通过vercel部署
+https://pixel-fate-fubwad4lg-fy14s-projects.vercel.app/
 
 ## 📜 许可说明
 本项目仅用于学习与像素艺术创作交流。卡牌图像资源通过 [ganesh-v/tarot-cards](https://github.com/ganesh-v/tarot-cards) 获取。
