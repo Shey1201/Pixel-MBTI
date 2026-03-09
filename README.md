@@ -2,6 +2,12 @@
 
 一个基于 React 和像素艺术风格构建的现代塔罗牌占卜与互动应用。结合了暗黑奥术美学与流畅的 UI 交互，为用户提供沉浸式的塔罗体验。
 
+## 📸 游戏截图
+
+![Pixel Fate Game Screenshot](public/screenshots/game.png)
+
+
+
 ## 🌟 核心功能
 
 - **沉浸式占卜 (Ritual)**：
